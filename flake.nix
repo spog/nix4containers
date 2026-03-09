@@ -21,6 +21,10 @@
           coreutils
           cpio
           diffstat
+          dockerTools.binSh
+          dockerTools.usrBinEnv
+          dockerTools.caCertificates
+          dockerTools.fakeNss
           file
           findutils
           gawk
@@ -33,12 +37,9 @@
           wget
           which
         ];
-        pathsToLink = [ "/bin" "/usr/bin" ];
+        pathsToLink = [ "/bin" "/etc" "/usr/bin" "/var" ];
       };
-      runAsRoot = ''
-        #!${pkgs.runtimeShell}
-        ln -s /bin/env /usr/bin/env
-      '';
+
       config = {
         Cmd = [ "/bin/bash" ];
       };
