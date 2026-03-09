@@ -11,6 +11,8 @@
     packages.${system}.container = pkgs.dockerTools.buildImage {
       name = "my-nix-container";
       tag = "latest";
+      # This (now) breaks reproducibility:
+      #created = "now";
       # Contents to include in the image root
       copyToRoot = pkgs.buildEnv {
         name = "image-root";
