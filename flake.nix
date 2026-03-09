@@ -18,6 +18,7 @@
         name = "image-root";
         paths = with pkgs; [
           bashInteractive
+          bzip2
           hello
           chrpath
           coreutils
