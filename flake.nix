@@ -33,10 +33,14 @@
           wget
           which
         ];
-        pathsToLink = [ "/bin" ];
+        pathsToLink = [ "/bin" "/usr/bin" ];
       };
+      runAsRoot = ''
+        #!${pkgs.runtimeShell}
+        ln -s /bin/env /usr/bin/env
+      '';
       config = {
-        Cmd = [ "${pkgs.bashInteractive}/bin/bash" ];
+        Cmd = [ "/bin/bash" ];
       };
     };
   };
