@@ -11,3 +11,6 @@ Build the flake output and pipe the resulting tarball directly into your contain
 - For Podman:
     $ podman load < result
     $ podman run --rm -ti my-nix-container:latest
+
+Run examples:
+    $ docker run --rm -ti -v $(pwd):/workdir --workdir=/workdir my-nix-container:latest
