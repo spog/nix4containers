@@ -4,8 +4,8 @@ Once defined, you build the flake output and pipe the resulting tarball directly
 
 - For Docker:
     docker load < result
-    docker run --rm my-nix-container:latest
+    docker run --rm -ti my-nix-container:latest
 
 - For Podman:
     podman load < result
-    podman run --rm my-nix-container:latest
+    podman run --rm -ti my-nix-container:latest

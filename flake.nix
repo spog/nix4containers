@@ -1,4 +1,5 @@
 {
+  description = "A flake to build containers";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
   };
@@ -17,7 +18,7 @@
         pathsToLink = [ "/bin" ];
       };
       config = {
-        Cmd = [ "${pkgs.hello}/bin/hello" ];
+        Cmd = [ "${pkgs.bashInteractive}/bin/bash" ];
       };
     };
   };
