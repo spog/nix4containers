@@ -27,6 +27,7 @@
           gcc
           git
           gnumake
+          gnused
           python3
           texinfo
           wget
