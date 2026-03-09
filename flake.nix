@@ -14,7 +14,24 @@
       # Contents to include in the image root
       copyToRoot = pkgs.buildEnv {
         name = "image-root";
-        paths = [ pkgs.hello pkgs.bashInteractive ];
+        paths = with pkgs; [
+          bashInteractive
+          hello
+          chrpath
+          coreutils
+          cpio
+          diffstat
+          file
+          findutils
+          gawk
+          gcc
+          git
+          gnumake
+          python3
+          texinfo
+          wget
+          which
+        ];
         pathsToLink = [ "/bin" ];
       };
       config = {
