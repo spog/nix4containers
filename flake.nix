@@ -24,6 +24,7 @@
           coreutils
           cpio
           diffstat
+          diffutils
           dockerTools.binSh
           dockerTools.usrBinEnv
           dockerTools.caCertificates
@@ -33,14 +34,25 @@
           gawk
           gcc
           git
+          glibc.bin
           glibcLocalesUtf8
+          gnugrep
           gnumake
           gnused
+          gnutar
+          gzip
+          hostname
           locale
+          patch
+          perl
           python3
+          rpcsvc-proto
           texinfo
+          util-linux
+          xz
           wget
           which
+          zstd
         ];
         pathsToLink = [ "/bin" "/etc" "/lib/locale" "/usr/bin" "/usr/share/locale" "/var" ];
       };
