@@ -7,6 +7,7 @@
   outputs = { self, nixpkgs }: let
     system = "x86_64-linux"; # Containers must be built for Linux
     pkgs = nixpkgs.legacyPackages.${system};
+    lib = pkgs.lib;
   in {
     packages.${system}.container = pkgs.dockerTools.buildImage {
       name = "my-nix-container";
@@ -34,9 +35,12 @@
           gawk
           gcc
           git
-          glibc.bin
+          # Make glibc high priority so its zdump wins over tzdata's version:
+          (lib.hiPrio glibc)
+          (lib.hiPrio glibc.bin)
           glibcLocalesUtf8
           gnugrep
+          gnulib
           gnumake
           gnused
           gnutar
@@ -47,18 +51,32 @@
           perl
           python3
           rpcsvc-proto
+          strace
           texinfo
+          tzdata
           util-linux
           xz
           wget
           which
           zstd
         ];
-        pathsToLink = [ "/bin" "/etc" "/lib/locale" "/usr/bin" "/usr/share/locale" "/var" ];
+        pathsToLink = [ "/bin" "/etc" "/lib/locale" "/share" "/usr/bin" "/var" ];
       };
+
+      # This runs during the image build to create the necessary symlink
+      #does not have enough perimissions: extraCommands = ''
+      runAsRoot = ''
+        mkdir -p share
+        ln -s ${pkgs.tzdata}/share/zoneinfo share/zoneinfo
+
+        # Optional: Set a default local time
+        mkdir -p etc
+        ln -s /share/zoneinfo/Europe/Ljubljana etc/localtime
+      '';
 
       config = {
         Env = [
+          "TZDIR=/share/zoneinfo"
           "LANG=en_US.UTF-8"
           "LANGUAGE=en_US:en"
           "LC_ALL=en_US.UTF-8"
