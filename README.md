@@ -14,3 +14,4 @@ Build the flake output and pipe the resulting tarball directly into your contain
 
 Run examples:
     $ docker run --rm -ti -v $(pwd):/workdir --workdir=/workdir my-nix-container:latest
+    $ docker run --rm -ti -u $(id -u):$(id -g) -v $(pwd):/workdir --workdir=/workdir my-nix-container:latest
