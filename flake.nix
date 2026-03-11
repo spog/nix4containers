@@ -38,6 +38,7 @@
           # Make glibc high priority so its zdump wins over tzdata's version:
           (lib.hiPrio glibc)
           (lib.hiPrio glibc.bin)
+          glibc.dev
           glibcLocalesUtf8
           gnugrep
           gnulib
@@ -67,11 +68,14 @@
       #does not have enough perimissions: extraCommands = ''
       runAsRoot = ''
         mkdir -p share
-        ln -s ${pkgs.tzdata}/share/zoneinfo share/zoneinfo
+        ln -sf ${pkgs.tzdata}/share/zoneinfo share/zoneinfo
 
         # Optional: Set a default local time
         mkdir -p etc
-        ln -s /share/zoneinfo/Europe/Ljubljana etc/localtime
+        ln -sf /share/zoneinfo/Europe/Ljubljana etc/localtime
+
+        # Provide glibc headers:
+        ln -sf ${pkgs.glibc.dev}/include /usr/include
       '';
 
       config = {
