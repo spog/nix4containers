@@ -8,6 +8,12 @@
     system = "x86_64-linux"; # Containers must be built for Linux
     pkgs = nixpkgs.legacyPackages.${system};
     lib = pkgs.lib;
+
+    fakeSudo = pkgs.writeScriptBin "sudo" ''
+    #!/bin/sh
+    # Just pass the command through without elevation
+    exec "$@"
+    '';
   in {
     packages.${system}.container = pkgs.dockerTools.buildImage {
       name = "my-nix-container";
@@ -30,6 +36,7 @@
           dockerTools.usrBinEnv
           dockerTools.caCertificates
           dockerTools.fakeNss
+          fakeSudo
           file
           findutils
           gawk
@@ -47,6 +54,9 @@
           gnutar
           gzip
           hostname
+          iproute2
+          less
+          libtinfo
           locale
           patch
           perl
@@ -54,8 +64,10 @@
           rpcsvc-proto
           strace
           texinfo
+          tmux
           tzdata
           util-linux
+          vim
           wget
           which
           xz
