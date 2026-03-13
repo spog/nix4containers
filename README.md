@@ -19,3 +19,4 @@ Run examples:
 
     Use current dir as workdir:
     $ docker run --rm -ti -u $(id -u):$(id -g) -v $(pwd):$(pwd):rw -v /tmp:/tmp:rw --workdir=$(pwd) my-nix-container:latest
+    $ docker run --rm -ti -u $(id -u):$(id -g) -v $(pwd):$(pwd):rw -v /tmp:/tmp:rw -v /var/tmp:/var/tmp:rw --workdir=$(pwd) my-nix-container:latest
