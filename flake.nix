@@ -24,7 +24,18 @@
     exec "lz4 $@"
     '';
 
-    sharedPkgs = import ./packages.nix { inherit pkgs; } ++ [ fakeSudo lz4C ];
+    # This wrapper fixes the "one giant filename" issue
+    rpcgen-wrapper = pkgs.writeShellScriptBin "rpcgen" ''
+      # CPP often looks like "gcc -E --sysroot=..."
+      # which breaks rpcgen!
+      if [ -n "$CPP" ]; then
+        # Redefine CPP:
+        CPP=$(echo $CPP | awk '{print $1}' | sed 's/gcc/cpp/')
+      fi
+      exec ${pkgs.rpcsvc-proto}/bin/rpcgen "$@"
+    '';
+
+    sharedPkgs = import ./packages.nix { inherit pkgs; } ++ [ fakeSudo lz4C (lib.hiPrio rpcgen-wrapper) ];
 
     # Example: Creating a basic FHS shell
     fhs = pkgs.buildFHSEnv {
@@ -94,7 +105,7 @@
     devShells.${system}.default = fhs.env;
 
     packages.${system}.container = pkgs.dockerTools.buildImage {
-      name = "minix-container";
+      name = "nix4container";
       tag = "latest";
       # This (now) breaks reproducibility:
       #created = "now";
