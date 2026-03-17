@@ -29,7 +29,13 @@
     # Example: Creating a basic FHS shell
     fhs = pkgs.buildFHSEnv {
       name = "my-fhs-env";
-      targetPkgs = pkgs: sharedPkgs;
+      targetPkgs = pkgs: sharedPkgs ++ [
+        # 1. Create a Python environment that includes the missing module
+        (pkgs.python3.withPackages (ps: with ps; [
+          argcomplete
+          # add other modules here
+        ]))
+      ];
 
       runScript = "bash";
     };
