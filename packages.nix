@@ -11,10 +11,6 @@
           #doas
           #doas-sudo-shim
           #doasConf
-          dockerTools.binSh
-          dockerTools.usrBinEnv
-          dockerTools.caCertificates
-          dockerTools.fakeNss
           file
           findutils
           gawk
@@ -23,7 +19,7 @@
           # Make glibc high priority so its zdump wins over tzdata's version:
           (lib.hiPrio glibc)
           (lib.hiPrio glibc.bin)
-          glibc.dev
+          (lib.hiPrio glibc.dev) # glibc wins the conflict
           glibcLocalesUtf8
           gnugrep
           gnulib

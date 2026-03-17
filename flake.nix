@@ -30,6 +30,7 @@
     fhs = pkgs.buildFHSEnv {
       name = "my-fhs-env";
       targetPkgs = pkgs: sharedPkgs;
+
       runScript = "bash";
     };
 
@@ -39,10 +40,41 @@
       # List all packages you want in the standard paths
       paths = sharedPkgs;
       # 2. Tell Nix which folders to symlink to the root
-      #pathsToLink = [ "/bin" "/lib" "/include" "/share" ];
-      pathsToLink = [ "/bin" "/etc" "/lib" "/share" "/usr" "/var" ];
+      pathsToLink = [ "/bin" "/etc" "/include" "/lib" "/share" "/usr" "/var" ];
+      # Either package priority or this (see glibc.dev in packages.nix)
+      #ignoreCollisions = true;
     };
+
+    # Create a wrapper that moves /include to /usr/include
+    usrInclude = pkgs.runCommand "usr-include" {} ''
+      mkdir -p $out/usr
+      ln -s ${fhsLayout}/include $out/usr/include
+    '';
+
   in {
+/*
+    devShells.${system}.default = pkgs.mkShell {
+      name = "fhs-like-shell";
+
+      # 3. Add the tree to the shell
+      buildInputs = [ fhsLayout ];
+
+      # 4. Manually set the variables so binaries find their dependencies
+      shellHook = ''
+        # Point to the symlinked tree in the Nix store
+        export FHS_ROOT=${fhsLayout}
+
+        # Add the FHS paths to the front of your environment
+        export PATH="$FHS_ROOT/bin:$PATH"
+        export LD_LIBRARY_PATH="$FHS_ROOT/lib:$LD_LIBRARY_PATH"
+        export C_INCLUDE_PATH="$FHS_ROOT/include:$C_INCLUDE_PATH"
+        export CPLUS_INCLUDE_PATH="$FHS_ROOT/include:$CPLUS_INCLUDE_PATH"
+
+        echo "FHS-like environment loaded at $FHS_ROOT"
+      '';
+    };
+*/
+
     # Example: Creating a basic FHS shell
     devShells.${system}.default = fhs.env;
 
@@ -53,7 +85,14 @@
       #created = "now";
       # Contents to include in the image root
       # 3. Drop the symlinked tree into the container root
-      copyToRoot = [ fhsLayout ];
+      copyToRoot = [
+        fhsLayout
+        usrInclude  # Provides /usr/include -> /bin/include
+        pkgs.dockerTools.binSh
+        pkgs.dockerTools.usrBinEnv
+        pkgs.dockerTools.caCertificates
+        pkgs.dockerTools.fakeNss
+      ];
 
       config = {
         Cmd = [ "/bin/bash" ];
